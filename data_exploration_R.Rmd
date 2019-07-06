@@ -1,0 +1,140 @@
+---
+title: "Data Exploration Methods in R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data Exploration is a pre-requisite to any model building.The file gives a quick glimpse of the some the key
+data exploration techniques in R.
+Loading the data and viewing the kind of data that's present
+
+```{r data loading}
+raw_df = read.csv("Test_Data.csv")
+head(raw_df)
+```
+
+Another good way to quickly see the data is View which presents data in a tabular format
+```{r view}
+View(raw_df)
+```
+View the summary. Summary gives a quick snapshot of the data values. For continuous variables,
+it gives the 5 metrics of range, mean and quartiles. For categorical variables, it gives a count by category. When the categories are more, it clubs it against 'others'
+
+```{r summary}
+summary(raw_df)
+```
+Quick view of the columns in the dataset
+
+```{r colnames}
+colnames(raw_df)
+```
+
+A very useful way to visualize data and the data types at one place
+
+```{r str}
+str(raw_df)
+```
+
+Get the count of data in the dataset
+
+```{r nrow}
+nrow(raw_df)
+```
+
+Get count by some particular categorical variable
+
+```{r count}
+library(plyr)
+count(raw_df,'LOB')
+```
+
+When we view the summary, we are automatically led to more questions.
+Questions could be like -
+1. Does the candidate source have a bearing on status of joining
+2. Do candidates joining decision get influenced by their notice period
+3. How has the joining been across different offered bands
+
+Lets see how can we answer some of these questions using visualizations
+
+Lets first view the historam of the duration to accept. We can use histograms for all continuous variables.
+
+```{r hist}
+hist(raw_df$Duration.to.accept.offer,
+     main="Histogram for Duration", 
+     xlab="Duration",ylim=c(0,7000)) 
+```
+How does duration vary across LOB for people who join
+Box plot of Duration vs LOB is a visualization by which we can view a categorical vs a continuous variable
+
+```{r ggplot_cont_vs_categ}
+library(ggplot2)
+joined <- raw_df[raw_df$Status=="Joined",]
+p <- ggplot(data = joined, mapping = aes(x = joined$LOB, y = joined$Duration.to.accept.offer)) + 
+  geom_boxplot(fill='#A4A4A4',color="darkred") + theme_classic() +xlab("LOB") + ylab("Duration")
+p
+```
+
+If we want to see if the Notice period differs for those who joined versus those who didnt join
+
+```{r ggplot_cont_vs_categ_facet}
+p <- ggplot(data = raw_df, mapping = aes(x = raw_df$LOB, y = raw_df$Notice.period)) + 
+  geom_boxplot(fill='#A4A4A4',color="darkred") +xlab("LOB") +ylab("Notice Period")
+p <- p + facet_wrap(~Status,nrow=2) + theme_classic()
+p
+```
+
+
+We could view a categorical variable vs another categorical variable using Stacked bar charts. If we want to use both LOB and Status, then first we would need to group the data to get the specific grouped counts
+
+```{r stacked_bar}
+grouped <- count(raw_df,c("LOB","Status"))
+
+p <- ggplot() + geom_bar(aes(y = freq, x = LOB, fill = Status), data = grouped,
+                          stat="identity")
+p
+
+```
+
+
+
+Continuous vs continuous variables can be viewed as Scatter plots. As is evident Percent hike expected and percent hike offered should be correlated, but lets just view it as a scatter plot
+
+```{r scatter}
+p <- ggplot(raw_df,aes(y = Pecent.hike.expected.in.CTC, x = Percent.hike.offered.in.CTC)) + geom_point(color="darkblue") + labs(x="Percent hike offered",y="Percent hike expected")
+p
+```
+
+If we now wanted to see if a difference in percent hike offered vs expected had anything to do with joining,
+we can simply add a legend to the plot above
+``` {r scatter_leged}
+p <- ggplot(raw_df,aes(y = Pecent.hike.expected.in.CTC, x = Percent.hike.offered.in.CTC)) + geom_point(aes(col=Status)) + labs(x="Percent hike offered",y="Percent hike expected")
+p <- p + geom_smooth(method="lm")
+p
+```
+
+
+At times we need to check variables which show zero variance. If a particular feature has near zero variance, it suffers from two problems. Firstly, such kind of feature wont really add to any predictive power when using this dataset for a model building. 
+Secondly, during a cross validation split, if a variable is severely imbalanced, then it wont be distibuted to all the validation splits, resulting in a model sometimes seeing a value and sometimes not seeing it at all.
+The Near Zero Variance in caret package is worth looking at for this purpose.
+
+```{r zero_var,messages=FALSE}
+library(caret)
+nzv <- nearZeroVar(raw_df, saveMetrics= TRUE)
+nzv
+```
+
+The freqRatio gives the ratio of the most frequent value by the next most freq value.
+percentUnique gives the number of unique values divided by the total number of samples.
+These values should be examined to understand if any feature should be ignored.
+
+
+A very important part of data exploration is to discover outliers.
+Outliers in univariate analysis can be discovered visually through box plots and also through histograms.
+Outliers in multivariate analysis normally can be seen when viewing multivariate plots.
+
+The next important thing to do, is to do understand missing values and decide on a suitable strategy.
+
+We will explore more on preprocessing in the next section.
