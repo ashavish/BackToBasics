@@ -7,26 +7,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Data Exploration is a pre-requisite to any model building.The file gives a quick glimpse of the some the key
-data exploration techniques in R.
-Loading the data and viewing the kind of data that's present
+Data Exploration is a pre-requisite for any model building.The file gives a quick glimpse of some of the key
+data exploration techniques in R.Lets load the data and view the kind of data that's present
 
 ```{r data loading}
 raw_df = read.csv("Test_Data.csv")
 head(raw_df)
 ```
 
-Another good way to quickly see the data is View which presents data in a tabular format
+Another good way to quickly see the data is 'View' which presents data in a tabular format
 ```{r view}
 View(raw_df)
 ```
-View the summary. Summary gives a quick snapshot of the data values. For continuous variables,
+
+We can view the summary. Summary gives a quick snapshot of the data values. For continuous variables,
 it gives the 5 metrics of range, mean and quartiles. For categorical variables, it gives a count by category. When the categories are more, it clubs it against 'others'
 
 ```{r summary}
 summary(raw_df)
 ```
-Quick view of the columns in the dataset
+To see the columns in the dataset
 
 ```{r colnames}
 colnames(raw_df)
@@ -52,12 +52,12 @@ count(raw_df,'LOB')
 ```
 
 When we view the summary, we are automatically led to more questions.
-Questions could be like -
+Questions like -
 1. Does the candidate source have a bearing on status of joining
 2. Do candidates joining decision get influenced by their notice period
 3. How has the joining been across different offered bands
 
-Lets see how can we answer some of these questions using visualizations
+Lets see how we can answer some of these questions using visualizations
 
 Lets first view the historam of the duration to accept. We can use histograms for all continuous variables.
 
@@ -66,7 +66,8 @@ hist(raw_df$Duration.to.accept.offer,
      main="Histogram for Duration", 
      xlab="Duration",ylim=c(0,7000)) 
 ```
-How does duration vary across LOB for people who join
+
+How does the duration to accept an offer vary across LOB for people who join
 Box plot of Duration vs LOB is a visualization by which we can view a categorical vs a continuous variable
 
 ```{r ggplot_cont_vs_categ}
@@ -77,7 +78,7 @@ p <- ggplot(data = joined, mapping = aes(x = joined$LOB, y = joined$Duration.to.
 p
 ```
 
-If we want to see if the Notice period differs for those who joined versus those who didnt join
+If we want to see whether the Notice period differs for those who joined versus those who didnt join
 
 ```{r ggplot_cont_vs_categ_facet}
 p <- ggplot(data = raw_df, mapping = aes(x = raw_df$LOB, y = raw_df$Notice.period)) + 
@@ -87,7 +88,7 @@ p
 ```
 
 
-We could view a categorical variable vs another categorical variable using Stacked bar charts. If we want to use both LOB and Status, then first we would need to group the data to get the specific grouped counts
+We could view a categorical variable vs another categorical variable using Stacked bar charts. If we want to use both LOB and Status, then first we need to group the data to get the specific grouped counts.
 
 ```{r stacked_bar}
 grouped <- count(raw_df,c("LOB","Status"))
@@ -100,15 +101,15 @@ p
 
 
 
-Continuous vs continuous variables can be viewed as Scatter plots. As is evident Percent hike expected and percent hike offered should be correlated, but lets just view it as a scatter plot
+Continuous vs continuous variables can be viewed as Scatter plots. As is evident, Percent hike expected and percent hike offered should be correlated, but lets just view it as a scatter plot
 
 ```{r scatter}
 p <- ggplot(raw_df,aes(y = Pecent.hike.expected.in.CTC, x = Percent.hike.offered.in.CTC)) + geom_point(color="darkblue") + labs(x="Percent hike offered",y="Percent hike expected")
 p
 ```
 
-If we now wanted to see if a difference in percent hike offered vs expected had anything to do with joining,
-we can simply add a legend to the plot above
+If we now want to see whether the difference in percent hike offered vs expected had anything to do with joining, we can simply add a legend to the plot above.
+
 ``` {r scatter_leged}
 p <- ggplot(raw_df,aes(y = Pecent.hike.expected.in.CTC, x = Percent.hike.offered.in.CTC)) + geom_point(aes(col=Status)) + labs(x="Percent hike offered",y="Percent hike expected")
 p <- p + geom_smooth(method="lm")
@@ -123,7 +124,7 @@ The Near Zero Variance in caret package is worth looking at for this purpose.
 ```{r zero_var,messages=FALSE}
 library(caret)
 nzv <- nearZeroVar(raw_df, saveMetrics= TRUE)
-nzv
+head(nzv)
 ```
 
 The freqRatio gives the ratio of the most frequent value by the next most freq value.

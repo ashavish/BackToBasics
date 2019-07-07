@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Outlier Analysis
 
 Outlier analysis might need to be performed as outliers can bias the model. But the action to be taken
- depends on the reason, the outliers were introduced in the first place.In some cases it might so happen, that outliers are a different category altogether.
+ depends on the reason the outliers were introduced in the first place.In some cases it might so happen, that outliers are a different category altogether.
 
 Visualizing could be done either by box plots or histograms.
 
@@ -103,7 +103,7 @@ abline(h = 4*mean(cooksd, na.rm=T), col="red")
 ## Missing value imputations
 
 Both outliers and missing values could require some method of dealing with them.
-First, is to identify them. Using the same mtcars dataset, lets first introduce some missing values.
+First we need to identify the missing values. Using the same mtcars dataset, lets first introduce some missing values.
 
 ```{r missing}
 df <- mtcars
@@ -114,8 +114,8 @@ sum(complete.cases(mtcars))
 df[is.na(df),]
 ```
 
-We can see the three rows which have the missing values.
-One way to deal with missing values is to drop them.
+We can see the three rows which have missing values.
+One way to deal with missing values, is to drop them.
 
 ```{r missing_drop}
 df2 <- na.omit(df)
@@ -179,7 +179,7 @@ cor_coeff$r
 cor_coeff$P
 ```
 
-Lets flatten this matrix by writing a quick function
+Lets flatten this matrix by writing a function
 
 ```{r corr_flatten}
 flatten_corr <- function(cormat,pmat)

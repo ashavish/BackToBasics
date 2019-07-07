@@ -380,7 +380,7 @@ $(document).ready(function () {
 
 <div id="outlier-analysis" class="section level2">
 <h2>Outlier Analysis</h2>
-<p>Outlier analysis might need to be performed as outliers can bias the model. But the action to be taken depends on the reason, the outliers were introduced in the first place.In some cases it might so happen, that outliers are a different category altogether.</p>
+<p>Outlier analysis might need to be performed as outliers can bias the model. But the action to be taken depends on the reason the outliers were introduced in the first place.In some cases it might so happen, that outliers are a different category altogether.</p>
 <p>Visualizing could be done either by box plots or histograms.</p>
 <pre class="r"><code>data(mtcars)
 str(mtcars)</code></pre>
@@ -471,7 +471,7 @@ abline(h = 4*mean(cooksd, na.rm=T), col=&quot;red&quot;)</code></pre>
 </div>
 <div id="missing-value-imputations" class="section level2">
 <h2>Missing value imputations</h2>
-<p>Both outliers and missing values could require some method of dealing with them. First, is to identify them. Using the same mtcars dataset, lets first introduce some missing values.</p>
+<p>Both outliers and missing values could require some method of dealing with them. First we need to identify the missing values. Using the same mtcars dataset, lets first introduce some missing values.</p>
 <pre class="r"><code>df &lt;- mtcars
 df[c(10,12,20),&quot;mpg&quot;] &lt;- NaN
 sum(complete.cases(df))</code></pre>
@@ -483,7 +483,7 @@ sum(complete.cases(df))</code></pre>
 ## Merc 280       NaN   6 167.6 123 3.92 3.440 18.3  1  0    4    4
 ## Merc 450SE     NaN   8 275.8 180 3.07 4.070 17.4  0  0    3    3
 ## Toyota Corolla NaN   4  71.1  65 4.22 1.835 19.9  1  1    4    1</code></pre>
-<p>We can see the three rows which have the missing values. One way to deal with missing values is to drop them.</p>
+<p>We can see the three rows which have missing values. One way to deal with missing values, is to drop them.</p>
 <pre class="r"><code>df2 &lt;- na.omit(df)
 sum(complete.cases(df2))</code></pre>
 <pre><code>## [1] 29</code></pre>
@@ -619,7 +619,7 @@ cor_coeff$r</code></pre>
 ## am   7.544526e-01
 ## gear 1.290291e-01
 ## carb           NA</code></pre>
-<p>Lets flatten this matrix by writing a quick function</p>
+<p>Lets flatten this matrix by writing a function</p>
 <pre class="r"><code>flatten_corr &lt;- function(cormat,pmat)
 {
   ut &lt;- upper.tri(cormat)
