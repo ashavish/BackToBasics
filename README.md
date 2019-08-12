@@ -6,4 +6,5 @@ Revisiting concepts on data exploration, data preperation and basic stats
 ### Contents:
 - Basic data exploration using R
 - Basic Preprocessing using R
+- Visualization functions using Python
 
