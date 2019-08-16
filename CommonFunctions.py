@@ -17,12 +17,41 @@ class Binning(object):
         return int(k)
 
 # Differentiating Continuous and Categorical Variables
-def cont_categ_variables(df):
-    cont = []
-    categ = []
-    for each in list(df):
-        if df[each].dtype.kind in 'bifc':            
-            cont.append(each)
-        else:
-            categ.append(each)
-    return cont,categ
+class DescriptiveAnalysis(object):
+    
+    def __init__(self,df):
+        self.df = df
+        
+    def cont_categ_variables(self):
+        cont = []
+        categ = []
+        for each in list(self.df):
+            if self.df[each].dtype.kind in 'bifc':            
+                cont.append(each)
+            else:
+                categ.append(each)
+        return cont,categ
+    
+    def descriptive_stats_cont(self,colname):
+        meandf = self.df[colname].mean()
+        mediandf = self.df[colname].median()
+        modedf = self.df[colname].mode()
+        stddf = self.df[colname].std()
+        skewdf = self.df[colname].skew()
+        kurtdf = self.df[colname].kurt()
+        mindf = self.df[colname].min()
+        maxdf = self.df[colname].max()
+        print("Mean",meandf)
+        print("Median",mediandf)
+        print("Mode",modedf)
+        print("Skew",skewdf)
+        print("Kurtosis",kurtdf)
+        print("Standard Deviation",stddf)
+        print("Min",mindf)
+        print("Max",maxdf)
+        return({'mean':meandf,'median':mediandf,'mode':modedf,'std':stddf,'kurtosis':kurtdf,'skew':skew,'min':mindf,'max':maxdf})
+        
+    def descriptive_stats_categ(self,colname):
+        print(self.df.groupby(colname).value_counts())
+    
+        
