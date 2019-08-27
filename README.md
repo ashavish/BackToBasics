@@ -8,3 +8,7 @@ Revisiting concepts on data exploration, data preperation and basic stats
 - Basic Preprocessing using R
 - Visualization functions using Python
 
+# Getting Started
+Best way to get started is to look at iPythonNotebooks folder which contains Jupyter Notebooks explaining most of the functions.
+Check the functions that have been imported and use it accordingly.
+
